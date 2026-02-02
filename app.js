@@ -1,29 +1,29 @@
 const request = require('./request');
 const response = require('./response');
-const createMiddleware = require('./middleware');
-const createRouter = require('./router');
+const createPipeline = require('./pipeline');
 
 const createApp = () => {
-	const middleware = createMiddleware();
-	const router = createRouter();
+	// Initialized once, reused across all requests
+  const pipeline = createPipeline();
+  const { router, middleware } = pipeline;
 
   const app = (req, res) => {
-		// Extend request and response objects
+    // Extend request and response objects (per request)
     request(req);
     response(res);
-		// Process middleware pipeline, then dispatch to router
-		middleware(req, res, router)
+    // Execute request pipeline
+    pipeline(req, res);
   };
 
-	// Register middleware functions
-	app.use = middleware.use;
+  // Middleware registration
+  app.use = middleware.use;
 
-	// Register route handlers by HTTP method
-	app.get = router.get;
-	app.post = router.post;
-	app.put = router.put;
-	app.patch = router.patch;
-	app.delete = router.delete;
+  // Route registration
+  app.get = router.get;
+  app.post = router.post;
+  app.put = router.put;
+  app.patch = router.patch;
+  app.delete = router.delete;
 
   return app;
 };
