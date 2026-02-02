@@ -4,7 +4,7 @@ const createRouter = require('./router');
 const createPipeline = () => {
   const stack = [];
 
-	// Initialized once, reused across all requests
+  // Initialized once, reused across all requests
   const middleware = createMiddleware(stack);
   const router = createRouter(stack);
 
@@ -13,10 +13,22 @@ const createPipeline = () => {
     let index = 0;
 
     const next = (error) => {
+      // Stop pipeline if the response has already been sent
       if (res.writableEnded) return;
 
       const layer = stack[index++];
-      if (!layer) return;
+
+      // No more layers to process
+      if (!layer) {
+				// Send generic 500 for unhandled framework-level errors
+        if (error && !res.writableEnded) {
+          res.statusCode = 500;
+          res.end('Internal Server Error');
+        }
+
+				// Stop pipeline execution
+        return;
+      }
 
       const context = { layer, req, res, next, error };
 
