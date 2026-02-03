@@ -31,10 +31,10 @@ const createMiddleware = (stack) => {
 
     // ============================================================
     // CONTROL-FLOW DECISION POINT
-    // 
+    //
     // - Use next()        → explicitly continue in normal flow
     // - Use next(error)   → explicitly continue in error flow
-    // 
+    //
     // Everywhere else, next(value) is used ONLY to forward the
     // existing pipeline state; it does NOT decide control flow.
     // ============================================================

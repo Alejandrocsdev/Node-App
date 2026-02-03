@@ -1,5 +1,6 @@
 const http = require('http');
 const createApp = require('./app');
+const Router = require('./Router');
 
 const nodeApp = () => {
 	// Create the application (HTTP request listener)
@@ -15,3 +16,4 @@ const nodeApp = () => {
 };
 
 module.exports = nodeApp;
+module.exports.Router = Router;

@@ -9,7 +9,7 @@ const createPipeline = () => {
   const router = createRouter(stack);
 
   // Execute pipeline
-  const pipeline = (req, res) => {
+  const pipeline = (req, res, out) => {
     let index = 0;
 
     const next = (error) => {
@@ -20,13 +20,16 @@ const createPipeline = () => {
 
       // No more layers to process
       if (!layer) {
-				// Send generic 500 for unhandled framework-level errors
+        // Delegate to parent pipeline if mounted; otherwise end at app level.
+        if (out) return out(error);
+
+        // Send generic 500 for unhandled framework-level errors
         if (error && !res.writableEnded) {
           res.statusCode = 500;
           res.end('Internal Server Error');
         }
 
-				// Stop pipeline execution
+        // Stop pipeline execution
         return;
       }
 
