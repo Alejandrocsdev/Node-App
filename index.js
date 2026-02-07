@@ -16,5 +16,6 @@ const nodeApp = () => {
   return app;
 };
 
+nodeApp.Router = Router;
+
 module.exports = nodeApp;
-module.exports.Router = Router;
