@@ -9,7 +9,8 @@ const nodeApp = () => {
   app.listen = (port, callback) => {
 		// Create an HTTP server (TCP-based)
     const server = http.createServer(app);
-    return server.listen(port, callback);
+    server.listen(port, callback);
+		return server
   };
 
   return app;
